@@ -183,6 +183,11 @@ android {
         // `com.stash.core.common.constants.StashConstants.STREAMING_ENGINE_ENABLED`
         // — keep both in sync (Task 23 flips both at once).
         buildConfigField("Boolean", "STREAMING_ENGINE_ENABLED", "true")
+        ndk {
+            // Keep ONLY 32-bit ARM for Android Go (and 64-bit ARM as fallback)
+            // Removes x86 and x86_64 bloat
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
     }
 
     signingConfigs {
@@ -199,6 +204,8 @@ android {
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
+            enableV1Signing = true
+            enableV2Signing = true
         }
     }
 
@@ -249,6 +256,9 @@ android {
             // Must extract native libs to disk so ffmpeg/ffprobe executables and
             // libc++_shared.so are in the same directory and can be linked at runtime.
             useLegacyPackaging = true
+        }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
